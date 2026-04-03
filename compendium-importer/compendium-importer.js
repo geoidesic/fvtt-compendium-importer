@@ -6,6 +6,16 @@
 
 class CompendiumImporter {
     constructor() {
+        // Register settings
+        game.settings.register('compendium-importer', 'enableJsonPaste', {
+            name: 'Enable JSON Paste',
+            hint: 'Allow pasting JSON directly as an alternative to file upload.',
+            scope: 'world',
+            config: true,
+            type: Boolean,
+            default: false
+        });
+
         // Register hooks
         this.hookRenderCompendium();
         this.hookRenderDialog();
@@ -33,36 +43,84 @@ class CompendiumImporter {
                     e.preventDefault();
 
                     const $container = $("<div class='compendium-importer-container'></div>");
-                    const $input = $(`<input type="file" accept="application/json" class="import-compendium" />`);
+                    let html = `<input type="file" accept="application/json" class="import-compendium" />`;
 
-                    $container.html($input);
+                    if (game.settings.get('compendium-importer', 'enableJsonPaste')) {
+                        html = `
+                            <select class="import-method">
+                                <option value="file">Import from File</option>
+                                <option value="text">Import from JSON Text</option>
+                            </select>
+                            <div class="file-input">
+                                <input type="file" accept="application/json" class="import-compendium" />
+                            </div>
+                            <div class="text-input" style="display:none">
+                                <textarea class="import-json-text" placeholder="Paste JSON here"></textarea>
+                                <button class="import-text-button">Import</button>
+                            </div>
+                        `;
+                    }
+
+                    $container.html(html);
 
                     $dialog
                         .find('.window-content')
                         .append($container);
 
-                    $input
+                    // Attach file input handler
+                    $container.find('.import-compendium')
                         .change((e) => {
                             $container.html("Importing, please wait");
 
                             try {
                                 if (e.target.files.length > 0) {
                                     const file = e.target.files[0];
-    
+        
                                     const reader = new FileReader();
-    
+        
                                     reader.onload = async (e) => {
                                         const result = await this.importFile(JSON.parse(e.target.result));
 
                                         $container.append(result);
                                         game.initializeUI();
                                     }
-    
+        
                                     reader.readAsText(file);
                                 }
                             } catch (e) {
                                 console.error(e);
-                                $container.html($input);
+                                $container.html(html);
+                                $container.append(`<div class="compendium-importer-error">Error: ${e.message}</div>`);
+                            }
+                        });
+
+                    // Attach select change handler
+                    $container.find('.import-method')
+                        .change((e) => {
+                            if (e.target.value === 'file') {
+                                $container.find('.file-input').show();
+                                $container.find('.text-input').hide();
+                            } else {
+                                $container.find('.file-input').hide();
+                                $container.find('.text-input').show();
+                            }
+                        });
+
+                    // Attach text import button handler
+                    $container.find('.import-text-button')
+                        .click(async () => {
+                            const text = $container.find('.import-json-text').val();
+                            if (!text) return;
+
+                            $container.html("Importing, please wait");
+
+                            try {
+                                const result = await this.importFile(JSON.parse(text));
+                                $container.append(result);
+                                game.initializeUI();
+                            } catch (e) {
+                                console.error(e);
+                                $container.html(html);
                                 $container.append(`<div class="compendium-importer-error">Error: ${e.message}</div>`);
                             }
                         });

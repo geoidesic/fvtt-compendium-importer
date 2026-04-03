@@ -2,9 +2,18 @@
   "name": "compendium-importer",
   "title": "Compendium Importer",
   "description": "Adds the ability to import/export compendiums.",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "Juan Sedano (Paul Endri)",
   "scripts": ["./compendium-importer.js"],
   "styles": ["./compendium-importer.css"],
-  "packs": []
+  "packs": [],
+  "settings": [
+    {
+      "name": "enableJsonPaste",
+      "type": "Boolean",
+      "default": false,
+      "label": "Enable JSON Paste",
+      "hint": "Allow pasting JSON directly as an alternative to file upload."
+    }
+  ]
 }

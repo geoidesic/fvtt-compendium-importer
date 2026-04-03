@@ -15,3 +15,5 @@ To install a module, follow these instructions:
 To use this, you'll notice an `export` button next to the `close` icon when viewing a compendium, this'll download a specific `.json` file.
 
 That .json file can then be uploaded, shared, etc and then imported by going to create a new compendium, and clicking the new `import compendium` buttons.
+
+If the "Enable JSON Paste" setting is enabled, you can choose to import from a file or paste the JSON text directly.

@@ -3,3 +3,35 @@
     text-align: center;
     flex: 1;
 }
+
+.compendium-importer-container .import-method {
+    margin-bottom: 10px;
+}
+
+.compendium-importer-container .import-json-text {
+    width: 100%;
+    height: 200px;
+    margin-bottom: 10px;
+}
+
+.compendium-importer-container .import-text-button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.compendium-importer-container .import-text-button:hover {
+    background: #0056b3;
+}
+
+.compendium-importer-error {
+    color: red;
+    margin-top: 10px;
+}
+
+.compendium-importer-success {
+    color: green;
+    margin-top: 10px;
+}
